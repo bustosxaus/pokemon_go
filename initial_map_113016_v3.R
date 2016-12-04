@@ -109,22 +109,28 @@ terrain_plot = ggplot(data = sarita, aes(reorder_size(first_type))) +
         theme(legend.position = 'top') + 
         theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+pdf('side_by_side_plot.pdf', width = 10, height = 6)
 grid.arrange(terrain_plot, water_plot, ncol = 2)
+dev.off()
 
 #heat map
 usa_map = ggmap(map_usa, base_layer = ggplot(aes(x = longitude, y = latitude), 
                                              data = sarita))
+pdf('heatmap.pdf', width = 8, height = 6)
 usa_map +
         stat_density2d(aes(x = longitude, y = latitude, fill = ..level.., 
                            alpha = ..level..), bins = 30, geom = 'polygon', 
                        data = usa) +
         scale_fill_gradient(low = 'gold', high = 'red', guide = F) +
         guides(alpha = F)
+dev.off()
 
 #pokemon type frequency
-freq_type = ggplot(data = sarita, aes(reorder_size(first_type))) + 
+pdf('count_by_type.pdf', width = 8, height = 6)
+ggplot(data = sarita, aes(reorder_size(first_type))) + 
         geom_bar() +
         xlab('pokemon type')
+dev.off()
 
 #playing with hour interval plots
 ggplot(data = sarita, aes(hour_interval)) + 
@@ -134,7 +140,8 @@ ggplot(data = sarita, aes(hour_interval)) +
 
 hour_counts = sarita %>%
         group_by(hour_interval, first_type) %>%
-        summarize(count = n())
+        summarize(count = n()) %>%
+        mutate(freq = count / sum(count))
 
-ggplot(hour_counts, aes(x = hour_interval, y = count, group = first_type)) +
-        geom_line()
+ggplot(hour_counts, aes(x = hour_interval, y = freq, group = first_type)) +
+        geom_line(aes(color = first_type))
