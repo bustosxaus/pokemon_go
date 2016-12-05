@@ -16,7 +16,7 @@ appearedDayOfWeek - week day of a sighting (Monday, Tuesday, Wednesday, Thursday
 
 appearedDay/appearedMonth/appearedYear - day/month/year of a sighting (numeric)
 
-terrainType - terrain where pokemon appeared described with help of GLCF Modis Land Cover (numeric)
+terrainType - terrain where pokemon appeared described with help of (numeric)
 
 closeToWater - did pokemon appear close (100m or less) to water (Boolean, same source as above)
 
