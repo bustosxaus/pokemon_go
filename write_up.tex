@@ -5,7 +5,7 @@
 
 \begin{document}
 
-\title{STA 841 Categorical Data Analysis \\ Predict'em All}
+\title{STA 841 Final Project \\ Predict'em All}
 \author{Sarah Normoyle, Gonzalo Bustos}
 \date{\today}
 \maketitle
@@ -18,7 +18,7 @@ PokemonGo is a augmented virtual reality game that came out in July 2016 where a
 
 \section{Data}
 
-The dataset used for this project is from kaggle.com and can be found at \hyperlink{Ref1}{[1]}.  The data set has about 300,000 observations of Pokemon sightings in the game PokemonGo from all over the world. Each observation in the dataset contains information about the sighting, including which Pokemon and location, time, and weather variables. We also collected data on which type each Pokemon is from the reference \hyperlink{Ref2}{[2]} . For the sake of simplicity and interpretation, we only considered a Pokemon's first type, which is traditionally used to sort Pokemon. We also have variables related to each Pokemon's stats and total stats, which we could also consider as a response variable. Variables that we will consider as covariates include: close to water (Boolean), distance to nearest Pokestop and nearest Gym, population density, terrain type (according to \hyperlink{Ref3}{[Ref 3]} about MODIS Land Cover), temperature, and time of day (in 24 hour period). Additionally, based on latitude and longitude, we added a couple variables, which are City and Country.
+The dataset used for this project is from kaggle.com and can be found at \hyperlink{Ref1}{[1]}.  The data set has about 300,000 observations of Pokemon sightings in the game PokemonGo from all over the world. Each observation in the dataset contains information about the sighting, including which Pokemon and location, time, and weather variables. We also collected data on which type each Pokemon is from the reference \hyperlink{Ref2}{[2]}. For the sake of simplicity and interpretation, we only considered a Pokemon's first type, which is traditionally used to sort Pokemon. We also have variables related to each Pokemon's stats and total stats, which we could also consider as a response variable. Variables that we will consider as covariates include: close to water (Boolean), distance to nearest Pokestop and nearest Gym, population density, terrain type (according to \hyperlink{Ref3}{[Ref 3]} about MODIS Land Cover), temperature, and time of day (in 24 hour period). Additionally, based on latitude and longitude, we added a couple variables, which are City and Country.
 
 \section{Research Question}
 
@@ -78,13 +78,13 @@ In addition to creating a model with fixed effects, we considered incorporating 
 After binary logistic regression, a multinomial probit model was also fit to the data that allows for a multinomial response, which would be the different types of Pokemon.
 
 \section{Results}
-Individual predictors had a different relationship with type of Pokemon. For example, for predicting Water vs. not water closeToWater had the biggest change in deviance and the lowest AIC. For Bug Pokemon, type of terrain had biggest change in deviance compared to the null model. When running stepwise regression, each additional variable added significantly changed the AIC value. The final model used for each binary regression of Pokemon:
+Individual predictors had a different relationship with type of Pokemon. For example, for predicting Water vs. not water closeToWater had the biggest change in deviance and the lowest AIC. For Bug Pokemon, type of terrain had biggest change in deviance compared to the null model. When running stepwise regression, each additional variable added significantly changed the AIC value. After looking at AIC and other values, the final model used for each binary regression of Pokemon:
 
 \begin{center}
 logit($\pi$) = $\beta_0$ + $\beta_1$ I(closeToWater) + $\beta_2$ I(pop:rural) + $\beta_3$ I(pop:suburban) + $\beta_4$ I(pop:urban) + $\beta_5$ I(gymin100m) + $\beta_6$ I(pokestopIn100m) + $\beta_7$ I(grassland) + $\beta_8$ I(savanna) + $\beta_9$ I(urban) + $\beta_{10}$ water + (1$|$Country)
 \end{center}
 
-\noindent The results after fitting 5 binary logistic regressions: \\ 
+\noindent The results after fitting 5 separate binary logistic regressions: \\ 
 \\ 
 \textbf{Fixed effect estimates:} \\ \\ 
 \begin{tabular}{| l | c | c | c | c |}
@@ -155,7 +155,7 @@ When the multinomial model was fit for the types, the fit is much worse because 
 
 A limitation with this data set is the non-uniform sampling of Pokemon. Because the occurrences of Pokemon are a random sample over time and location, we are not able to model the rate of Pokemon appearances. In addition, because the Pokemon are not sampled uniformly and because we only have presence and not absence data, it is more difficult to model the occurrence of all Pokemon. \\ 
 \\ 
-However, despite this unequal sampling scheme, we are able to conduct an the analysis of differences between occurrences of types of species. The concern for sampling bias here would be if times or locations with a particular type of species were oversampled compared to the other types. However, if we control for the factors that introduce this sampling biases (such as population density) we are able to make observations about differences between types of species. 
+However, despite this unequal sampling scheme, we are able to conduct an the analysis of differences between occurrences of types of species. The concern for sampling bias here would be if times or locations with a particular type of species were oversampled compared to the other types. However, if we control for the factors that introduce this sampling biases (such as population density) we are able to make observations about differences between types of species. Our models do not fit the data that well, but there a first step in exploring the detials of the game.
 
 \section{Conclusion and Extensions}
 
