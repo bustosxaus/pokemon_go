@@ -32,7 +32,7 @@ The ultimate question of the game is being able to predict the next location of 
 
 \section{Exploratory Data Analysis}
 
-The data set contains 296,021 observations from 9/2/2016 to 9/8/2016. About half of the observations are within the United States, and the other observations are scattered around the globe. The frequency of each type of Pokemon is different based on our non-representative sample and also based on how often they appear in the game. First we look at the counts per type and also counts per individual species of Pokemon.
+The data set contains 296,021 observations from 9/2/2016 to 9/8/2016. About half of the observations are within the United States, and the other observations are scattered around the globe. The frequency of each type of Pokemon is different based on our non-representative sample and also based on how often they appear in the game. First we look at the counts per type of Pokemon.
 
 \begin{figure}[H]
 \centering
@@ -51,15 +51,15 @@ When looking at location as a potential covariate, we first look at where the ob
 \caption{Heat Map of United States Pokemon Counts}
 \end{figure}
 
-\noindent After looking at this plot, we believe that our sample of data is neither a representative nor a random sample of Pokemon seen during the time period because certain parts of the country have no points and some parts of the country are over-sampled. Because we are focusing on comparing how species distribution changes among the sample, this is not concerning.
+\noindent After looking at this plot, we believe that our sample of data is neither a representative nor a random sample of Pokemon seen during the time period because certain parts of the country have no points and some parts of the country are over-sampled. Because we are focusing on comparing how species distribution changes among the sample, this is not concerning. Below is another plot showing the difference in distributions across species for terrain types and distance to water.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale = 0.6]{side_by_side_plot.pdf}
-\caption{Comparing Terrain types and Close to Water}
+\includegraphics[scale = 0.5]{side_by_side_plot.pdf}
+\caption{Terrain Types and Distance to Water}
 \end{figure}
 
-\noindent In addition, population density might be a variable that relates to the presence of a particular species. Perhaps certain types appear more where it is more/less dense.
+\noindent On the y-axis of these plots is the proportion of counts, and on the x-axis is type of Pokemon. There seems to be a relationship between terrain type and proportion of species as well as distance to water and proportion of species. For distance to water, of the Pokemon found close to water, there are more water and electric Pokemon for example. In addition, population density is also a variable that relates to the presence of a particular species. Perhaps certain types appear more where it is more/less dense.
 
 \subsection{Time and Weather}
 
@@ -87,7 +87,7 @@ logit($\pi$) = $\beta_0$ + $\beta_1$ I(closeToWater) + $\beta_2$ I(pop:rural) + 
 \noindent The results after fitting 5 binary logistic regressions: \\ 
 \\ 
 \textbf{Fixed effect estimates:} \\ \\ 
-\begin{tabular}{| c | c | c | c | c |}
+\begin{tabular}{| l | c | c | c | c |}
 	\hline
 	Parameters & Normal Model & Water Model & Bug Model & Poison Model \\
 	\hline 
@@ -106,8 +106,8 @@ logit($\pi$) = $\beta_0$ + $\beta_1$ I(closeToWater) + $\beta_2$ I(pop:rural) + 
 \\ 
 \\ 
 \\ 
-\textbf{Random effect estimates:}\\ \\ 
-\begin{tabular}{| c | c | c | c | c |}
+\textbf{Random effect estimates:} \\ \\ 
+\begin{tabular}{| l | c | c | c | c |}
 	\hline
 	& Normal & Water & Bug & Poison \\  
 	\hline
@@ -117,38 +117,39 @@ logit($\pi$) = $\beta_0$ + $\beta_1$ I(closeToWater) + $\beta_2$ I(pop:rural) + 
 \\ 
 \\ 
 \\ 
-DISCUSSION HERE ABOUT COEFFICIENTS AND MODEL:
+There are numerous differences regarding the log odds coefficients between the various binary models. Some variables make a big difference in log odds for some Pokemon types while they don't make much of a difference for other Pokemon types. For example, the odds of seeing a water Pokemon go up in population dense, urban areas near the water and near Pokestops while the odds of seeing a bug Pokemon go up in not population dense, rural areas with forest terrain not near the water and not near Pokestops. In addition, the random effect for Country ranges from about -1 to 1 on most of the models and helps to explain much of the variation. Perhaps there are other variables that differ between countries, or perhaps the distribution of species simply differs that much between countries. 
 
 \newpage
-\noindent 5 examples to show examples of probability estimates: \\ 
+\noindent 4 data examples to show examples of probabilities from each of the 4 model estimates:  \\ 
 \\ 
-\begin{tabular}{ | c | c | c | c | c | c | c |}
+\begin{tabular}{| l | c | c | c | c |}
 	\hline
-	& closeToWater & pop density & gymin100m & pokestopIn100m & Terrain & Country \\ 
+	Covariates & 1 & 2 & 3 & 4 \\ 
 	\hline
-	1  & true & urban & true & true & water & \\
-	2  & true & rural & false & false & water & USA \\  
-	3  & false & rural & false & false & forest & \\  
-	4  & false & mid & false & false & grassland &\\
-	5  & true & urban  & true & true & savanna & \\ 
-	\hline
-\end{tabular} \\ 
+	closeToWater & true & false & false & true \\ 
+	pop density & urban & rural & mid & urban \\ 
+	gymin100m & true & false & false & true \\ 
+	pokestopIn100m & true  & false & false & true \\ 
+	terrain & water & forest & grassland & savanna \\ 
+	country & Netherlands & Germany & Spain & UK \\ 
+	\hline 
+\end{tabular}
 \\ 
-\\ 
-\\ 
-Probabilities for each of 4 models for each of 5 example: \\
+\\ \\ 
+Probabilities for each of 4 models for each of 4 example (bolded is biggest of the examples for that model): \\
 \\  
-\begin{tabular}{c | c | c | c | c}
-	Number & Water & Bug & Poison & Electric \\ 
+\begin{tabular}{ | c | c | c | c | c |}
 	\hline
-	1 & & & & \\
-	2 & & & & \\ 
-	3 & & & & \\ 
-	4 & & & & \\ 
-	5 & & & & \\  	
+	Model & 1 & 2 & 3 & 4\\ 
+	\hline
+	Normal & 0.3448 & \textbf{0.4776} & 0.4330 & 0.2903 \\
+	Water & \textbf{0.5049} & 0.0573 & 0.0887 & 0.2030 \\ 
+	Bug & 0.1189  & \textbf{0.3578} & 0.1738 & 0.1040 \\ 
+	Poison & 0.0337 & 0.0536 & 0.1093 & \textbf{0.1197} \\ 	
+	\hline
 \end{tabular}\\ 
-\\ \\ \\ 
-When the multinomial model was fit for the types, the fit was worse because we are incorporating more types of Pokemon. The model always predicts a Normal Pokemon because this is the Pokemon with the highest mean probability. This type of model would need more work to be able to distinguish situations in which the other Pokemon were more probable.
+\\ \\
+When the multinomial model was fit for the types, the fit is much worse because we are incorporating more types of Pokemon. The model always predicts a Normal Pokemon because this is the Pokemon with the highest mean probability. This type of model would need more work and more variables to be able to distinguish situations in which the other Pokemon were more probable. Overall, the models do not do well in predicting which Pokemon will appear given the data. However, we are able to see when the odds of seeing a Pokemon increases or decreases.
 
 \section{Limitations}
 
