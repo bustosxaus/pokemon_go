@@ -88,7 +88,7 @@ arrange(REs, X.Intercept.)
 fixef(fit)
 
 
-# fit model with random effects
+# NORMAL
 fit_normal = glmer(normal ~ 
 	closeToWater + 
 	type_density +
@@ -99,9 +99,11 @@ fit_normal = glmer(normal ~
 	data = data, 
 	family = binomial(link = 'logit'))
 summary(fit_normal)
+ref = ranef(fit_normal)$country
+REs = data.frame(country = row.names(ref), c(ref))
+arrange(REs, X.Intercept.)
 
-
-# fit model with random effects
+# Poison
 fit_poison = glmer(poison ~ 
 	closeToWater + 
 	type_density +
@@ -113,28 +115,26 @@ fit_poison = glmer(poison ~
 	family = binomial(link = 'logit'))
 
 summary(fit_poison)
+ref = ranef(fit_poison)$country
+REs = data.frame(country = row.names(ref), c(ref))
+arrange(REs, X.Intercept.)
+
+# new data predictions
 
 newdata = data.frame(
-	closeToWater = c("true"),
-	type_density = c("urban"),
-	terrainType = c(0), 
-	country = "Belgium")
+	closeToWater = c("true",  "false", "false", "true"),
+	type_density = c("urban",  "rural", "mid", "urban"),
+	gymIn100m = c("true",  "false", "false", "true"),
+	pokestopIn100m = c("true",  "false", "false", "true"),
+	terrain_grouped = c("water", 
+		"forest", "grassland", "savanna"), 
+	country = c("Netherlands",
+		"Germany", "Spain", "United Kingdom"))
 
-newdata = data.frame(
-	closeToWater = c("true"),
-	type_density = c("urban"),
-	terrainType = c(0), 
-	country = "United Kingdom")
-
-newdata = data.frame(
-	closeToWater = c("true"),
-	type_density = c("urban"),
-	gymIn100m = "true",
-	pokestopIn100m = "true",
-	terrain_grouped = "other", 
-	country = "United States of America")
-
-predict(fit, newdata, type = 'response')
+predict(fit_water, newdata, type = 'response')
+predict(fit_bug, newdata, type = 'response')
+predict(fit_normal, newdata, type = 'response')
+predict(fit_poison, newdata, type = 'response')
 
 
 ### MULTINOMIAL
@@ -148,22 +148,3 @@ multi_fit = multinom(grouped_type ~
 
 predictions = predict(multi_fit, data)
 
-
-
-post_betas = matrix(0, nrow = J, ncol = P+1)
-post_betas[2:J,] = coefficients(multi_fit)
-    
-    
-# design matrix for test set, X_test
-X_test = model.matrix(formula, data = data)
-P = ncol(X_test)
-X_test = cbind(1, X_test)
-    
-# Finding multinomial probabilities associated with each test observation
-probs = matrix(0, nrow = nrow(X_test), ncol = J)
-    for (w in 1:nrow(X_test)){
-      new_x = X_test[w,]
-      for (j in 1:J){
-        probs[w,j] = exp(new_x %*% post_betas[j,])
-      }
-    }
